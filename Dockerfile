@@ -40,7 +40,7 @@ ADD --keep-git-dir=false https://github.com/basecamp/fizzy.git#${FIZZY_REF} /rai
 
 # Un commit de pagbrl/fizzy-oidc, jamais une branche : la même image se
 # reconstruit à l'identique.
-ARG FIZZY_OIDC_REF=e5a67576c10b43d6ce9f8137a2983baadc9caa6e
+ARG FIZZY_OIDC_REF=998ba0e478a212d7b2bc4ceccc11703eed0ec278
 RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
     BUNDLE_DEPLOYMENT=0 BUNDLE_FROZEN=0 bundle lock && \
     bundle install && \
@@ -48,7 +48,11 @@ RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC
     bundle exec bootsnap precompile -j 1 --gemfile && \
     bundle exec bootsnap precompile -j 1 app/ lib/
 
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# La gem lit sa configuration OIDC au démarrage de Rails, précompilation
+# comprise : des valeurs factices ici, les vraies viennent du Deployment.
+RUN SECRET_KEY_BASE_DUMMY=1 \
+    FIZZY_OIDC_ISSUER=https://build.invalid FIZZY_OIDC_CLIENT_ID=build FIZZY_OIDC_CLIENT_SECRET=build \
+    ./bin/rails assets:precompile
 
 FROM base
 
