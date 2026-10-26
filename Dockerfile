@@ -4,9 +4,10 @@
 # Fizzy pour Data For Good : Fizzy amont à un commit épinglé, plus la gem
 # fizzy-oidc (SSO Keycloak, membres créés avant leur premier login).
 #
-# C'est le Dockerfile de production de Fizzy, avec une seule différence : la
-# source vient d'un `ADD` du dépôt amont, et la gem est ajoutée au Gemfile avant
-# le `bundle install`. Rien d'autre n'est modifié.
+# C'est le Dockerfile de production de Fizzy, avec deux différences : la source
+# vient d'un `ADD` du dépôt amont, et la gem est ajoutée au Gemfile avant le
+# `bundle install` ; un initializer rend les nouveaux boards privés par défaut.
+# Rien d'autre n'est modifié.
 #
 # Les deux épingles vont ensemble. fizzy-oidc remplace cinq contrôleurs de
 # Fizzy et vise un commit précis (son AGENTS.md) : monter FIZZY_REF sans relire
@@ -47,6 +48,21 @@ RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile -j 1 --gemfile && \
     bundle exec bootsnap precompile -j 1 app/ lib/
+
+# Un nouveau board n'est visible que de son créateur (Fizzy l'ouvre à tout le
+# compte, `all_access: true`) : on évite le spam. Le créateur l'ouvre ensuite
+# dans les réglages du board. Un `all_access` explicite (l'API, le
+# community-manager) passe tel quel.
+COPY <<'RUBY' /rails/config/initializers/d4g_private_boards.rb
+Rails.application.config.to_prepare do
+  BoardsController.prepend(Module.new do
+    private
+      def board_params
+        action_name == "create" ? super.with_defaults(all_access: false) : super
+      end
+  end)
+end
+RUBY
 
 # La gem lit sa configuration OIDC au démarrage de Rails, précompilation
 # comprise : des valeurs factices ici, les vraies viennent du Deployment.
