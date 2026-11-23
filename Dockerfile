@@ -40,10 +40,10 @@ RUN apt-get update -qq && \
 ARG FIZZY_REF=3068c2a74da2e6d1cba38e7cf15b0dc158dbf2fe
 ADD --keep-git-dir=false https://github.com/basecamp/fizzy.git#${FIZZY_REF} /rails
 
-# Un commit de pagbrl/fizzy-oidc, jamais une branche : la même image se
+# Un commit de dataforgoodfr/fizzy-oidc (Forgejo), jamais une branche : la même image se
 # reconstruit à l'identique.
 ARG FIZZY_OIDC_REF=6b6db4a040b201d2a377fac2fda74de977e4f254
-RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
+RUN echo "gem \"fizzy-oidc\", git: \"https://source.dataforgood.fr/dataforgoodfr/fizzy-oidc.git\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
     BUNDLE_DEPLOYMENT=0 BUNDLE_FROZEN=0 bundle lock && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
@@ -73,7 +73,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 \
 
 FROM base
 
-LABEL org.opencontainers.image.source="https://github.com/dataforgoodfr/d4g-fizzy"
+LABEL org.opencontainers.image.source="https://source.dataforgood.fr/dataforgoodfr/d4g-fizzy"
 LABEL org.opencontainers.image.description="Fizzy avec la gem fizzy-oidc, pour Data For Good"
 LABEL org.opencontainers.image.licenses="O'Saasy"
 

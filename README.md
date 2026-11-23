@@ -1,7 +1,7 @@
 # d4g-fizzy
 
 L'image Fizzy de Data For Good : [Fizzy](https://github.com/basecamp/fizzy) à un
-commit épinglé, avec la gem [fizzy-oidc](https://github.com/pagbrl/fizzy-oidc)
+commit épinglé, avec la gem [fizzy-oidc](https://source.dataforgood.fr/dataforgoodfr/fizzy-oidc)
 — connexion par Keycloak seulement, et des membres que le community-manager crée
 avant leur premier login.
 
