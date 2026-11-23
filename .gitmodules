@@ -1,0 +1,3 @@
+[submodule "fizzy-oidc"]
+	path = fizzy-oidc
+	url = ../fizzy-oidc.git

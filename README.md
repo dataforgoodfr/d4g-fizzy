@@ -23,15 +23,17 @@ avant leur premier login.
 
 ## Monter une version
 
-`FIZZY_REF` et `FIZZY_OIDC_REF` vont ensemble : fizzy-oidc remplace cinq
-contrôleurs de Fizzy et vise un commit précis. Monter Fizzy, c'est d'abord
-monter l'épingle de fizzy-oidc (sa liste de contrôle est dans son `AGENTS.md`),
-puis reporter les deux commits ici. Vérifier au passage que
+`FIZZY_REF` et le sous-module `fizzy-oidc` vont ensemble : fizzy-oidc remplace
+cinq contrôleurs de Fizzy et vise un commit précis. Monter Fizzy, c'est d'abord
+monter fizzy-oidc (sa liste de contrôle est dans son `AGENTS.md`), puis reporter
+`FIZZY_REF` dans le Dockerfile et le commit de la gem dans le sous-module
+(`git -C fizzy-oidc checkout <commit> && git add fizzy-oidc`). Vérifier au passage que
 `BoardsController#board_params` existe toujours en amont : l'initializer des
 boards privés le surcharge, et s'il disparaît la surcharge ne fait plus rien.
 
 ## Construire à la main
 
 ```
-docker build -t d4g-fizzy .
+git clone --recurse-submodules ssh://git@source.dataforgood.fr:2222/dataforgoodfr/d4g-fizzy.git
+docker build -t d4g-fizzy d4g-fizzy
 ```

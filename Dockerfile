@@ -40,10 +40,11 @@ RUN apt-get update -qq && \
 ARG FIZZY_REF=3068c2a74da2e6d1cba38e7cf15b0dc158dbf2fe
 ADD --keep-git-dir=false https://github.com/basecamp/fizzy.git#${FIZZY_REF} /rails
 
-# Un commit de dataforgoodfr/fizzy-oidc (Forgejo), jamais une branche : la même image se
-# reconstruit à l'identique.
-ARG FIZZY_OIDC_REF=6b6db4a040b201d2a377fac2fda74de977e4f254
-RUN echo "gem \"fizzy-oidc\", git: \"https://source.dataforgood.fr/dataforgoodfr/fizzy-oidc.git\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
+# La gem est le sous-module fizzy-oidc, à un commit fixe : la même image se
+# reconstruit à l'identique. Forgejo refuse la lecture anonyme, et le clone de
+# Woodpecker récupère le sous-module avec ses propres identifiants.
+COPY fizzy-oidc /rails/vendor/fizzy-oidc
+RUN echo 'gem "fizzy-oidc", path: "vendor/fizzy-oidc"' >> Gemfile && \
     BUNDLE_DEPLOYMENT=0 BUNDLE_FROZEN=0 bundle lock && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
