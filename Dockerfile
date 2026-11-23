@@ -42,7 +42,7 @@ ADD --keep-git-dir=false https://github.com/basecamp/fizzy.git#${FIZZY_REF} /rai
 
 # Un commit de pagbrl/fizzy-oidc, jamais une branche : la même image se
 # reconstruit à l'identique.
-ARG FIZZY_OIDC_REF=7bae3862469ff838245c34212314f4ae97255daa
+ARG FIZZY_OIDC_REF=6b6db4a040b201d2a377fac2fda74de977e4f254
 RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
     BUNDLE_DEPLOYMENT=0 BUNDLE_FROZEN=0 bundle lock && \
     bundle install && \
