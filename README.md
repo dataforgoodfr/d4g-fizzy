@@ -5,8 +5,12 @@ commit épinglé, avec la gem [fizzy-oidc](https://github.com/pagbrl/fizzy-oidc)
 — connexion par Keycloak seulement, et des membres que le community-manager crée
 avant leur premier login.
 
-- Image : `ghcr.io/dataforgoodfr/d4g-fizzy:sha-<commit>`, construite à chaque
-  push sur `main` qui touche le `Dockerfile` (`.github/workflows/image.yml`).
+- Source : `source.dataforgood.fr/dataforgoodfr/d4g-fizzy` (Forgejo) ; GitHub
+  n'en est qu'un miroir, qui refuse les push directs (DCM2-189).
+- Image : `registry.infra.dataforgood.fr/dataforgoodfr/d4g-fizzy:sha-<commit>`
+  (zot), construite par Woodpecker (ci.dataforgood.fr, `.woodpecker.yaml`) à
+  chaque push sur `main`. Les anciens tags `ghcr.io/dataforgoodfr/d4g-fizzy`
+  restent lisibles pour un rollback.
 - Déploiement : `d4g-gitops`, `base/fizzy` et `overlays/staging/fizzy`. La
   configuration de la gem (`fizzy_oidc.yml`, le groupe admin) est là-bas, pas
   dans l'image.

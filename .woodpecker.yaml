@@ -1,0 +1,37 @@
+# Le build de l'image sur ci.dataforgood.fr (Woodpecker), comme
+# d4g-community-manager (DCM2-103) : chaque push sur main pousse
+# registry.infra.dataforgood.fr/dataforgoodfr/d4g-fizzy:sha-<commit court>
+# dans zot. Le tag `sha-<court>` est celui que `d4gctl deploy fizzy --tag`
+# épingle en staging (DCM2-189).
+#
+# Les `$$` sont des `$` du shell : Woodpecker substitue les `$VAR` seuls
+# avant de lancer le step.
+when:
+  - event: push
+    branch: main
+  - event: manual
+
+steps:
+  - name: build
+    image: moby/buildkit:v0.34.0
+    backend_options:
+      kubernetes:
+        secrets:
+          - name: ci-steps
+            key: ZOT_USER
+            target: { env: ZOT_USER }
+          - name: ci-steps
+            key: ZOT_PASSWORD
+            target: { env: ZOT_PASSWORD }
+    commands:
+      - export BUILDKIT_HOST=tcp://buildkitd.ci.svc.cluster.local:1234
+      # Le contrôleur de NetworkPolicies n'ouvre les flux d'un pod qu'environ
+      # 2 s après son démarrage.
+      - i=0; until buildctl debug workers >/dev/null 2>&1; do i=$$((i+1)); [ $$i -lt 30 ] || { echo "buildkitd injoignable"; exit 1; }; sleep 1; done
+      - mkdir -p /tmp/docker && export DOCKER_CONFIG=/tmp/docker
+      - printf '{"auths":{"zot.ci.svc.cluster.local:5000":{"auth":"%s"}}}' "$$(printf '%s:%s' "$$ZOT_USER" "$$ZOT_PASSWORD" | base64 | tr -d '\n')" > /tmp/docker/config.json
+      - TAG="sha-$$(echo "$$CI_COMMIT_SHA" | cut -c1-7)"
+      - >-
+        buildctl build --frontend dockerfile.v0 --local context=. --local dockerfile=.
+        --output type=image,name=zot.ci.svc.cluster.local:5000/dataforgoodfr/d4g-fizzy:"$$TAG",push=true
+      - echo "poussé registry.infra.dataforgood.fr/dataforgoodfr/d4g-fizzy:$$TAG"
