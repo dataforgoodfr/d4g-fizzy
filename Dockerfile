@@ -9,9 +9,10 @@
 # `bundle install` ; un initializer rend les nouveaux boards privés par défaut.
 # Rien d'autre n'est modifié.
 #
-# Les deux épingles vont ensemble. fizzy-oidc remplace cinq contrôleurs de
-# Fizzy et vise un commit précis (son AGENTS.md) : monter FIZZY_REF sans relire
-# cette liste, c'est un login qui casse en silence.
+# Les deux épingles vont ensemble. fizzy-oidc remplace des contrôleurs, des vues
+# et des helpers de Fizzy et vise un commit précis (son AGENTS.md) : monter
+# FIZZY_REF sans relire cette liste, c'est un login ou une page d'accès qui
+# casse en silence.
 
 ARG RUBY_VERSION=3.4.8
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
@@ -41,7 +42,7 @@ ADD --keep-git-dir=false https://github.com/basecamp/fizzy.git#${FIZZY_REF} /rai
 
 # Un commit de pagbrl/fizzy-oidc, jamais une branche : la même image se
 # reconstruit à l'identique.
-ARG FIZZY_OIDC_REF=b6c1e48678595221e48857a7b106004fefa7e744
+ARG FIZZY_OIDC_REF=cca5dfe62b26fff9bb4dbca68a13d34a5baaa761
 RUN echo "gem \"fizzy-oidc\", github: \"pagbrl/fizzy-oidc\", ref: \"${FIZZY_OIDC_REF}\"" >> Gemfile && \
     BUNDLE_DEPLOYMENT=0 BUNDLE_FROZEN=0 bundle lock && \
     bundle install && \
