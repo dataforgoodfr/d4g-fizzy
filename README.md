@@ -20,6 +20,9 @@ avant leur premier login.
   (`config/initializers/d4g_private_boards.rb`) surcharge
   `BoardsController#board_params` à la création. Un `all_access` explicite
   (l'API, le community-manager) passe tel quel.
+- Le thème Data For Good (DCM2-198) : `d4g-theme/zz-d4g.css`, que le
+  `Dockerfile` copie après les feuilles de Fizzy, tourne son bleu de marque vers
+  le violet #721CD1 et charge DM Sans (`d4g-theme/fonts/`, licence OFL).
 
 ## Monter une version
 
@@ -27,7 +30,8 @@ avant leur premier login.
 cinq contrôleurs de Fizzy et vise un commit précis. Monter Fizzy, c'est d'abord
 monter fizzy-oidc (sa liste de contrôle est dans son `AGENTS.md`), puis reporter
 `FIZZY_REF` dans le Dockerfile et le commit de la gem dans le sous-module
-(`git -C fizzy-oidc checkout <commit> && git add fizzy-oidc`). Vérifier au passage que
+(`git -C fizzy-oidc checkout <commit> && git add fizzy-oidc`). Relire aussi
+`d4g-theme/zz-d4g.css` (l'échelle `--lch-blue-*`). Vérifier au passage que
 `BoardsController#board_params` existe toujours en amont : l'initializer des
 boards privés le surcharge, et s'il disparaît la surcharge ne fait plus rien.
 

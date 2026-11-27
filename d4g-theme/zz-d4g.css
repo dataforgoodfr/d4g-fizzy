@@ -1,0 +1,71 @@
+/* Le thème Data For Good (DCM2-198) : violet #721CD1, vert #CCE03D, DM Sans.
+ *
+ * Copié dans app/assets/stylesheets/ par le Dockerfile. `stylesheet_link_tag
+ * :app` lie les feuilles par ordre alphabétique : le « zz- » passe après
+ * _global.css, et ces règles hors @layer, de même sélecteur, l'emportent.
+ *
+ * Le bleu est la couleur de marque de Fizzy (liens, boutons, sélection, carte
+ * par défaut) et n'est pas proposé dans le sélecteur de couleur des cartes :
+ * on garde ses luminosités et on le tourne vers la teinte du violet D4G. Le
+ * mode sombre redéfinit l'échelle deux fois dans _global.css (choix explicite,
+ * préférence du système) : on reprend les deux sélecteurs. À relire quand
+ * FIZZY_REF monte. */
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("dm-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("dm-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  /* lch-blue-dark est exactement #721CD1. */
+  --lch-blue-darkest: 26% 0.13 297;
+  --lch-blue-darker: 40% 0.2 297;
+  --lch-blue-dark: 47.99% 0.2421 296.95;
+  --lch-blue-medium: 60% 0.2 297;
+  --lch-blue-light: 84% 0.075 297;
+  --lch-blue-lighter: 92% 0.03 297;
+  --lch-blue-lightest: 96% 0.016 297;
+}
+
+html[data-theme="dark"] {
+  --lch-blue-darkest: 95.93% 0.0217 297;
+  --lch-blue-darker: 86% 0.068 297;
+  --lch-blue-dark: 74% 0.14 297;
+  --lch-blue-medium: 62% 0.18 297;
+  --lch-blue-light: 40% 0.1 297;
+  --lch-blue-lighter: 30% 0.045 297;
+  --lch-blue-lightest: 25% 0.032 297;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    --lch-blue-darkest: 95.93% 0.0217 297;
+    --lch-blue-darker: 86% 0.068 297;
+    --lch-blue-dark: 74% 0.14 297;
+    --lch-blue-medium: 62% 0.18 297;
+    --lch-blue-light: 40% 0.1 297;
+    --lch-blue-lighter: 30% 0.045 297;
+    --lch-blue-lightest: 25% 0.032 297;
+  }
+}
+
+/* Le vert D4G en accent : trop clair pour du texte sur fond blanc, il ne sert
+ * que de fond. À moitié transparent, comme la sélection qu'il remplace : des
+ * lignes sélectionnées qui se chevauchent restent lisibles. */
+::selection {
+  background: rgb(204 224 61 / 50%);
+}

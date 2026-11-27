@@ -66,6 +66,12 @@ Rails.application.config.to_prepare do
 end
 RUBY
 
+# Le thème Data For Good (DCM2-198) : une feuille qui passe après celles de
+# Fizzy, et la fonte DM Sans qu'elle charge. Propshaft les empreinte avec le
+# reste à la précompilation.
+COPY d4g-theme/zz-d4g.css /rails/app/assets/stylesheets/
+COPY d4g-theme/fonts/ /rails/app/assets/fonts/
+
 # La gem lit sa configuration OIDC au démarrage de Rails, précompilation
 # comprise : des valeurs factices ici, les vraies viennent du Deployment.
 RUN SECRET_KEY_BASE_DUMMY=1 \
